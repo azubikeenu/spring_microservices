@@ -24,7 +24,7 @@ jobs:
           path: ~/spring_microservices
       - run:
           name: Install Bom
-          command: (cd ../mssc-brewery-bom ; ./mvnw install)
+          command: (cd ../mssc-brewery-bom ; mvn install)
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Build
@@ -52,7 +52,7 @@ jobs:
           path: ~/spring_microservices
       - run:
           name: Install Bom
-          command: (cd ../mssc-brewery-bom ; ./mvnw install)
+          command: (cd ../mssc-brewery-bom ;  mvn install)
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Build
@@ -81,7 +81,7 @@ jobs:
           path: ~/spring_microservices
       - run:
           name: Install Bom
-          command: (cd ../mssc-brewery-bom ; ./mvnw install)
+          command: (cd ../mssc-brewery-bom ; mvn install)
       # Use mvn clean and package as the standard maven build phase
       - run:
           name: Build
@@ -108,10 +108,10 @@ jobs:
           path: ~/spring_microservices
       - run:
           name: Install Bom
-          command: (cd ../mssc-brewery-bom ; ./mvnw install)
+          command: (cd ../mssc-brewery-bom ; mvn install)
       - run:
           name: Start server on localhost:8080
-          command: (cd ../mssc-beer-service ; ./mvnw spring-boot:run)
+          command: (cd ../mssc-beer-service ; mvn spring-boot:run)
           background: true
       - run:
           shell: /bin/sh
