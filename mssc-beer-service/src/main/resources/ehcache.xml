@@ -1,0 +1,17 @@
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
+
+    <cache alias="beerCache" uses-template="config-cache"/>
+    <cache alias="beerListCache" uses-template="config-cache"/>
+    <cache-template name="config-cache">
+        <expiry>
+            <ttl unit="minutes">5</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">20</heap>
+            <offheap unit="MB">1</offheap>
+        </resources>
+    </cache-template>
+</config>
