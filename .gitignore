@@ -112,6 +112,8 @@ Desktop.ini
 /bin/
 /deploy/
 
+db-volume/
+
 ######################
 # Logs
 ######################

@@ -25,9 +25,7 @@ class BreweryClientTest {
             .price(new BigDecimal("1.23"))
             .upc(String.valueOf(ThreadLocalRandom.current().nextLong(10000, 200000)))
             .build();
-
     BeerDto response = breweryClient.saveNewBeer(request);
-
     final BeerDto beerDto = breweryClient.getById(response.getId());
     assertThat(beerDto).isNotNull();
   }
