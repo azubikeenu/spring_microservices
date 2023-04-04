@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +23,7 @@ class BreweryClientTest {
             .beerStyle(BeerStyle.ALE)
             .beerName("Gulder")
             .price(new BigDecimal("1.23"))
-            .upc("13241214")
+            .upc(String.valueOf(ThreadLocalRandom.current().nextLong(10000, 200000)))
             .build();
 
     BeerDto response = breweryClient.saveNewBeer(request);
@@ -37,7 +38,7 @@ class BreweryClientTest {
             .beerStyle(BeerStyle.ALE)
             .beerName("Gulder")
             .price(new BigDecimal("1.23"))
-            .upc("13241214")
+            .upc(String.valueOf(ThreadLocalRandom.current().nextLong(10000, 200000)))
             .build();
 
     BeerDto response = breweryClient.saveNewBeer(request);
@@ -52,7 +53,7 @@ class BreweryClientTest {
             .beerStyle(BeerStyle.GOSE)
             .beerName("Star")
             .price(new BigDecimal("1.23"))
-            .upc("566399300038")
+            .upc(String.valueOf(ThreadLocalRandom.current().nextLong(10000, 200000)))
             .build();
     BeerDto savedBeer  = breweryClient.saveNewBeer(newBeer);
     savedBeer.setBeerName(newName);

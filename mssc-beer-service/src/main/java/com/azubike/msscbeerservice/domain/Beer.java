@@ -41,7 +41,7 @@ public class Beer {
   @Enumerated(EnumType.STRING)
   private BeerStyle beerStyle;
 
-  @Column
+  @Column(unique = true)
   private String upc;
 
   private BigDecimal price;
