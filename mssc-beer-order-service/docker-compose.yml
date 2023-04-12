@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+  mssc-beer-order-service-db:
+    image: mysql
+    ports: ['3307:3306']
+    environment:
+      MYSQL_ROOT_PASSWORD: userpass
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: userpass
+      MYSQL_DATABASE : beer_order_service
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
+    restart: always
+    volumes:
+      - ./db-volume/db-data:/var/lib/mysql
