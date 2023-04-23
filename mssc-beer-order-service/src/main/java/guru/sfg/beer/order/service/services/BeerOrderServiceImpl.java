@@ -63,13 +63,14 @@ public class BeerOrderServiceImpl implements BeerOrderService {
       final int pageNumber = beerOrderPage.getPageable().getPageNumber();
 
 
-      // Page size  of beerOrders List
+      // Page size of beerOrders List
       final int pageSize = beerOrderPage.getPageable().getPageSize();
 
       // BeerOrderDto collection
       final List<BeerOrderDto> content =
           beerOrderPage.stream().map(beerOrderMapper::beerOrderToDto).collect(Collectors.toList());
 
+      // create a PagedList
       return new BeerOrderPagedList(
           content, PageRequest.of(pageNumber, pageSize), beerOrderPage.getTotalElements());
 
@@ -91,6 +92,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
 
       beerOrder.setOrderStatus(OrderStatusEnum.NEW);
 
+      // create a bidirectional relationship
       beerOrder.getBeerOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
 
       BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);

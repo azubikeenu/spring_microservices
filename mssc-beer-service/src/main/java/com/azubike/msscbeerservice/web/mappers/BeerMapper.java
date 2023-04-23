@@ -5,7 +5,6 @@ import com.azubike.msscbeerservice.services.inventory.BeerInventoryService;
 import com.azubike.msscbeerservice.web.model.BeerDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(
@@ -14,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class BeerMapper {
   @Autowired protected BeerInventoryService beerInventoryService;
 
-  @Mapping(target = "quantityOnHand", ignore = true)
+  @Mapping(target = "quantityOnHand", source = "beer.minOnHand")
   public abstract BeerDto beerToDto(Beer beer);
 
-  @Mapping(target = "minOnHand", ignore = true)
-  @Mapping(target = "quantityToBrew", ignore = true)
+
+  @Mapping(target = "minOnHand" , source = "beerDto.quantityOnHand")
   public abstract Beer dtoToBeer(BeerDto beerDto);
 
   @Mapping(

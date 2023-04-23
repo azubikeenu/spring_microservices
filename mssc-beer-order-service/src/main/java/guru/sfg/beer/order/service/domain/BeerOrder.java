@@ -54,7 +54,7 @@ public class BeerOrder extends BaseEntity {
     @ManyToOne
     private Customer customer;
 
-  @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL )  // setting CascadeType to ALL causes persistence and removal of beer entity to remove all related entities on the BeerOrderLine table
   @Fetch(FetchMode.JOIN)  // Same as setting the fetch = FetchType.EAGER ==> Data is loaded eagerly
   private Set<BeerOrderLine> beerOrderLines;
 

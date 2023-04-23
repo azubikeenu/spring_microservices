@@ -27,6 +27,7 @@ public class BeerOrderBootStrap implements CommandLineRunner {
     }
 
     private void loadCustomerData() {
+        // this just creates a new customer, so we can place orders
         if (customerRepository.count() == 0) {
             customerRepository.save(Customer.builder()
                     .customerName(TASTING_ROOM)

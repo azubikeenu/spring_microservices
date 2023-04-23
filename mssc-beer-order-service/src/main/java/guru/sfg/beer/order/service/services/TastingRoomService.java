@@ -6,14 +6,15 @@ import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.repositories.CustomerRepository;
 import guru.sfg.beer.order.service.web.model.BeerOrderDto;
 import guru.sfg.beer.order.service.web.model.BeerOrderLineDto;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Slf4j
@@ -40,9 +41,7 @@ public class TastingRoomService {
     @Transactional
     @Scheduled(fixedRate = 2000) //run every 2 seconds
     public void placeTastingRoomOrder(){
-        
         List<Customer> customerList = customerRepository.findAllByCustomerNameLike(BeerOrderBootStrap.TASTING_ROOM);
-
         if (customerList.size() == 1){ //should be just one
             doPlaceOrder(customerList.get(0));
         } else {
@@ -53,6 +52,7 @@ public class TastingRoomService {
     private void doPlaceOrder(Customer customer) {
         String beerToOrder = getRandomBeerUpc();
 
+        // create an orderLine for TASTING_ROOM customer
         BeerOrderLineDto beerOrderLine = BeerOrderLineDto.builder()
                 .upc(beerToOrder)
                 .orderQuantity(ThreadLocalRandom.current().nextInt(6)) //todo externalize value to property
@@ -60,13 +60,14 @@ public class TastingRoomService {
 
         List<BeerOrderLineDto> beerOrderLineSet = new ArrayList<>();
         beerOrderLineSet.add(beerOrderLine);
-
+        // create an order for the TASTING_ROOM customer
         BeerOrderDto beerOrder = BeerOrderDto.builder()
                 .customerId(customer.getId())
                 .customerRef(UUID.randomUUID().toString())
                 .beerOrderLines(beerOrderLineSet)
                 .build();
 
+        // make an order for the TASTING_ROOM customer
         BeerOrderDto savedOrder = beerOrderService.placeOrder(customer.getId(), beerOrder);
 
     }
