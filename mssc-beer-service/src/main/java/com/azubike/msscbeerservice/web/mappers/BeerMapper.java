@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class BeerMapper {
   @Autowired protected BeerInventoryService beerInventoryService;
 
-  @Mapping(target = "quantityOnHand", source = "beer.minOnHand")
+
+  @Mapping(target = "quantityOnHand" ,ignore = true)
   public abstract BeerDto beerToDto(Beer beer);
 
 
-  @Mapping(target = "minOnHand" , source = "beerDto.quantityOnHand")
+  @Mapping(target = "minOnHand" , ignore = true)
+  @Mapping(target = "quantityToBrew" , ignore = true)
   public abstract Beer dtoToBeer(BeerDto beerDto);
 
   @Mapping(

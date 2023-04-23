@@ -31,13 +31,13 @@ public class BeerInventoryBootstrap implements CommandLineRunner {
 
   private void loadInitialInv() {
     beerInventoryRepository.save(
-        BeerInventory.builder().beerId(BEER_1_UUID).upc(BEER_1_UPC).quantityOnHand(50).build());
+        BeerInventory.builder().beerId(BEER_1_UUID).upc(BEER_1_UPC).quantityOnHand(5).build());
 
     beerInventoryRepository.save(
-        BeerInventory.builder().beerId(BEER_2_UUID).upc(BEER_2_UPC).quantityOnHand(50).build());
+        BeerInventory.builder().beerId(BEER_2_UUID).upc(BEER_2_UPC).quantityOnHand(5).build());
 
     beerInventoryRepository.saveAndFlush(
-        BeerInventory.builder().beerId(BEER_3_UUID).upc(BEER_3_UPC).quantityOnHand(50).build());
+        BeerInventory.builder().beerId(BEER_3_UUID).upc(BEER_3_UPC).quantityOnHand(5).build());
 
     log.debug("Loaded Inventory. Record count: " + beerInventoryRepository.count());
   }

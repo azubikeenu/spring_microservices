@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class BeerEvent implements Serializable {
     private BeerDto beerDto;
 }
