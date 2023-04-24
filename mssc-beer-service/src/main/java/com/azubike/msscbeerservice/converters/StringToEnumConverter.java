@@ -1,6 +1,6 @@
 package com.azubike.msscbeerservice.converters;
 
-import brewery.model.BeerStyle;
+import common.model.BeerStyle;
 import org.springframework.core.convert.converter.Converter;
 
 public class StringToEnumConverter implements Converter<String, BeerStyle> {

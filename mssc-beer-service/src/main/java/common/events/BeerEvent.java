@@ -1,6 +1,6 @@
-package brewery.events;
+package common.events;
 
-import brewery.model.BeerDto;
+import common.model.BeerDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

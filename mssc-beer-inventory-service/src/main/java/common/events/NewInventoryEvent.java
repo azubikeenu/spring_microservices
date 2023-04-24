@@ -1,6 +1,6 @@
-package brewery.events;
+package common.events;
 
-import brewery.model.BeerDto;
+import common.model.BeerDto;
 import lombok.*;
 @NoArgsConstructor
 public class NewInventoryEvent  extends BeerEvent{

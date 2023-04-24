@@ -2,7 +2,7 @@ package com.azubike.msscbeerservice.web.controllers;
 
 import com.azubike.msscbeerservice.services.BeerService;
 import com.azubike.msscbeerservice.util.TestUtils;
-import brewery.model.BeerDto;
+import common.model.BeerDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

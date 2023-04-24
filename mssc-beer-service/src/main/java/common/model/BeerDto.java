@@ -1,4 +1,4 @@
-package brewery.model;
+package common.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;

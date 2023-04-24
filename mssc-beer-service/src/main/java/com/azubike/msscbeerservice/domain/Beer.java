@@ -1,6 +1,6 @@
 package com.azubike.msscbeerservice.domain;
 
-import brewery.model.BeerStyle;
+import common.model.BeerStyle;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;

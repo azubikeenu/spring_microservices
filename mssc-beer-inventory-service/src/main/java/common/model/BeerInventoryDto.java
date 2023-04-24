@@ -1,4 +1,4 @@
-package brewery.model;
+package common.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

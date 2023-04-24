@@ -1,8 +1,8 @@
 package com.azubike.msscbeerservice.listeners;
 
 import com.azubike.msscbeerservice.config.JmsConfig;
-import brewery.events.BrewBeerEvent;
-import brewery.events.NewInventoryEvent;
+import common.events.BrewBeerEvent;
+import common.events.NewInventoryEvent;
 import com.azubike.msscbeerservice.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

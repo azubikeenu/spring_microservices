@@ -2,7 +2,7 @@ package com.azubike.msscbeerservice.bootstrap;
 
 import com.azubike.msscbeerservice.domain.Beer;
 import com.azubike.msscbeerservice.repositories.BeerRepository;
-import brewery.model.BeerStyle;
+import common.model.BeerStyle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

@@ -1,4 +1,4 @@
-package brewery.model;
+package common.model;
 
 public enum BeerStyle {
   LAGER,

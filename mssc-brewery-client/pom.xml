@@ -11,7 +11,7 @@
 	<groupId>com.azubike</groupId>
 	<artifactId>mssc-brewery-client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>mssc-brewery-client</name>
+	<name>mssc-common-client</name>
 	<description>artifact for beer microservice consumer using rest template</description>
 	<properties>
 		<java.version>11</java.version>

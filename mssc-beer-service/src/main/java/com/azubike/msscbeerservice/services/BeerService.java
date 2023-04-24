@@ -1,8 +1,8 @@
 package com.azubike.msscbeerservice.services;
 
-import brewery.model.BeerDto;
-import brewery.model.BeerPageList;
-import brewery.model.BeerStyle;
+import common.model.BeerDto;
+import common.model.BeerPageList;
+import common.model.BeerStyle;
 import java.util.UUID;
 import org.springframework.data.domain.PageRequest;
 
