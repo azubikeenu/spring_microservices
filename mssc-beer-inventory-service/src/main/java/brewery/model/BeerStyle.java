@@ -1,4 +1,4 @@
-package com.azubike.msscbeerservice.web.model;
+package brewery.model;
 
 public enum BeerStyle {
   LAGER,

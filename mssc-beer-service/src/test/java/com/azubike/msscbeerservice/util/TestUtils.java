@@ -1,7 +1,7 @@
 package com.azubike.msscbeerservice.util;
 
-import com.azubike.msscbeerservice.web.model.BeerDto;
-import com.azubike.msscbeerservice.web.model.BeerStyle;
+import brewery.model.BeerDto;
+import brewery.model.BeerStyle;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

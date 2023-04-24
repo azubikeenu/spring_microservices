@@ -1,4 +1,4 @@
-package com.azubike.msscbeerservice.web.model;
+package brewery.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;

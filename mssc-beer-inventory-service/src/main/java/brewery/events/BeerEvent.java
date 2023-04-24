@@ -1,6 +1,6 @@
-package com.azubike.msscbeerservice.events;
+package brewery.events;
 
-import com.azubike.msscbeerservice.web.model.BeerDto;
+import brewery.model.BeerDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

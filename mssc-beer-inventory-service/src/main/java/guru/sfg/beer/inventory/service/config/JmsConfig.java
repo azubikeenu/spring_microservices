@@ -9,6 +9,7 @@ import org.springframework.jms.support.converter.MessageType;
 
 @Configuration
 public class JmsConfig {
+    public static final String NEW_INVENTORY_QUEUE = "new-inventory";
     @Bean
     public MessageConverter messageConverter(ObjectMapper objectMapper){
         // this creates a bidirectional mapping between our POJO objects to JSON

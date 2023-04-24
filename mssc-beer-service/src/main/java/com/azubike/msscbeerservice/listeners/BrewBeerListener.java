@@ -1,8 +1,8 @@
 package com.azubike.msscbeerservice.listeners;
 
 import com.azubike.msscbeerservice.config.JmsConfig;
-import com.azubike.msscbeerservice.events.BrewBeerEvent;
-import com.azubike.msscbeerservice.events.NewInventoryEvent;
+import brewery.events.BrewBeerEvent;
+import brewery.events.NewInventoryEvent;
 import com.azubike.msscbeerservice.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class BrewBeerListener {
                 new RuntimeException(String.format("Beer with id %s not found", beerDto.getId().toString())));
 
         beerDto.setQuantityOnHand(beer.getQuantityToBrew());
-        log.info("brewing beer :{} and updating quantityOnHand To {}" , beer.getId() , beer.getQuantityToBrew());
+        log.debug("brewing beer :{} and updating quantityOnHand To {}" , beer.getId() , beer.getQuantityToBrew());
         NewInventoryEvent newInventoryEvent = new NewInventoryEvent(beerDto);
         jmsTemplate.convertAndSend(JmsConfig.NEW_INVENTORY_QUEUE , newInventoryEvent);
     }

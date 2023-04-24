@@ -2,7 +2,7 @@ package com.azubike.msscbeerservice.services.brewery;
 
 import com.azubike.msscbeerservice.config.JmsConfig;
 import com.azubike.msscbeerservice.domain.Beer;
-import com.azubike.msscbeerservice.events.BrewBeerEvent;
+import brewery.events.BrewBeerEvent;
 import com.azubike.msscbeerservice.repositories.BeerRepository;
 import com.azubike.msscbeerservice.services.inventory.BeerInventoryService;
 import com.azubike.msscbeerservice.web.mappers.BeerMapper;
@@ -30,9 +30,9 @@ public class BreweryService {
         beers.forEach(beer -> {
             var minOnHand = beer.getMinOnHand();
             var quantityOnHand = beerInventoryService.getQuantityOnHandInventory(beer.getId());
-            log.info("Beer name : {} minOnHand : {} quantityOnHand : {}" , beer.getBeerName() , minOnHand,quantityOnHand);
+            log.debug("Beer name : {} minOnHand : {} quantityOnHand : {}" , beer.getBeerName() , minOnHand,quantityOnHand);
             if(minOnHand >= quantityOnHand){
-                log.info("Request to brew beer {}" ,beer.getId());
+                log.debug("Request to brew beer {}" ,beer.getId());
                 jmsTemplate.convertAndSend(JmsConfig.BREWING_REQUEST_QUEUE, new BrewBeerEvent(beerMapper.beerToDto(beer)));
             }
         });

@@ -1,9 +1,9 @@
 package com.azubike.msscbeerservice.web.controllers;
 
 import com.azubike.msscbeerservice.services.BeerService;
-import com.azubike.msscbeerservice.web.model.BeerDto;
-import com.azubike.msscbeerservice.web.model.BeerPageList;
-import com.azubike.msscbeerservice.web.model.BeerStyle;
+import brewery.model.BeerDto;
+import brewery.model.BeerPageList;
+import brewery.model.BeerStyle;
 import java.net.URI;
 import java.util.UUID;
 import javax.validation.Valid;

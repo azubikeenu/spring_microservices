@@ -2,7 +2,7 @@ package com.azubike.msscbeerservice.web.mappers;
 
 import com.azubike.msscbeerservice.domain.Beer;
 import com.azubike.msscbeerservice.services.inventory.BeerInventoryService;
-import com.azubike.msscbeerservice.web.model.BeerDto;
+import brewery.model.BeerDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;

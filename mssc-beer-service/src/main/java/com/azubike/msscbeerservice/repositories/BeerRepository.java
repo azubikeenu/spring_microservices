@@ -1,7 +1,7 @@
 package com.azubike.msscbeerservice.repositories;
 
 import com.azubike.msscbeerservice.domain.Beer;
-import com.azubike.msscbeerservice.web.model.BeerStyle;
+import brewery.model.BeerStyle;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
