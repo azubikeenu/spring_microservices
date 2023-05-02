@@ -1,4 +1,4 @@
-package com.azubike.msscbeerservice.listeners;
+package com.azubike.msscbeerservice.services.brewery.listeners;
 
 import com.azubike.msscbeerservice.config.JmsConfig;
 import common.events.BrewBeerEvent;

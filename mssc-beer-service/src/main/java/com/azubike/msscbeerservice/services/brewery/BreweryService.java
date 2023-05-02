@@ -29,10 +29,10 @@ public class BreweryService {
         final List<Beer> beers = beerRepository.findAll();
         beers.forEach(beer -> {
             var minOnHand = beer.getMinOnHand();
-            var quantityOnHand = beerInventoryService.getQuantityOnHandInventory(beer.getId());
-            log.debug("Beer name : {} minOnHand : {} quantityOnHand : {}" , beer.getBeerName() , minOnHand,quantityOnHand);
+            var inventoryOnHand = beerInventoryService.getQuantityOnHandInventory(beer.getId());
+            log.debug("Beer name : {} minOnHand : {} inventoryOnHand : {}" , beer.getBeerName() , minOnHand,inventoryOnHand);
 
-            if(minOnHand != null && minOnHand >= quantityOnHand){
+            if(minOnHand != null && inventoryOnHand <= minOnHand){
                 log.debug("Request to brew beer {}" ,beer.getId());
                 jmsTemplate.convertAndSend(JmsConfig.BREWING_REQUEST_QUEUE, new BrewBeerEvent(beerMapper.beerToDto(beer)));
             }
