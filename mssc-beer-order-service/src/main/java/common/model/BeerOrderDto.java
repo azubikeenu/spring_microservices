@@ -47,8 +47,6 @@ public class BeerOrderDto {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
     @JsonProperty("lastModifiedDate")
     private OffsetDateTime lastModifiedDate = null;
-
-
     private UUID customerId;
     private String customerRef;
     private List<BeerOrderLineDto> beerOrderLines;

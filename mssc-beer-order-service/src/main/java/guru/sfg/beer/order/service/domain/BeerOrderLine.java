@@ -16,16 +16,16 @@
  */
 package guru.sfg.beer.order.service.domain;
 
-import java.sql.Timestamp;
-import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** Created by jt on 2019-01-26. */
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import java.sql.Timestamp;
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -56,6 +56,8 @@ public class BeerOrderLine extends BaseEntity {
   private UUID beerId;
 
   private String upc;
-  private Integer orderQuantity = 0;
-  private Integer quantityAllocated = 0;
+  private Integer orderQuantity ;
+  private Integer quantityAllocated ;
+
 }
+

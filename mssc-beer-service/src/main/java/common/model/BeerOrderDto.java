@@ -54,4 +54,6 @@ public class BeerOrderDto {
     private List<BeerOrderLineDto> beerOrderLines;
     private BeerOrderStatusEnum orderStatus;
     private String orderStatusCallbackUrl;
+    private Integer orderQuantity = 0;
+    private Integer quantityAllocated =0;
 }
