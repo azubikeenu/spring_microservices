@@ -15,42 +15,38 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package guru.sfg.beer.order.service.web.model;
+package common.model;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@Builder
 public class BeerOrderLineDto extends BaseItem {
 
-  @Builder
-  public BeerOrderLineDto(
-      UUID id,
-      Integer version,
-      OffsetDateTime createdDate,
-      OffsetDateTime lastModifiedDate,
-      String upc,
-      String beerName,
-      UUID beerId,
-      BeerStyle beerStyle,
-      Integer orderQuantity,
-      BigDecimal price) {
-    super(id, version, createdDate, lastModifiedDate);
-    this.upc = upc;
-    this.beerName = beerName;
-    this.beerId = beerId;
-    this.orderQuantity = orderQuantity;
-    this.beerStyle = beerStyle;
-    this.price = price;
-  }
+  @JsonProperty("id")
+  private UUID id = null;
 
+  @JsonProperty("version")
+  private Integer version = null;
+
+  @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssZ", shape=JsonFormat.Shape.STRING)
+  @JsonProperty("createdDate")
+  private OffsetDateTime createdDate = null;
+
+  @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssZ", shape=JsonFormat.Shape.STRING)
+  @JsonProperty("lastModifiedDate")
+  private OffsetDateTime lastModifiedDate = null;
   private String upc;
   private String beerName;
   private UUID beerId;

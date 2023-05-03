@@ -19,12 +19,12 @@ package guru.sfg.beer.order.service.services;
 
 import guru.sfg.beer.order.service.domain.BeerOrder;
 import guru.sfg.beer.order.service.domain.Customer;
-import guru.sfg.beer.order.service.domain.OrderStatusEnum;
+import guru.sfg.beer.order.service.domain.BeerOrderStatusEnum;
 import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.repositories.CustomerRepository;
 import guru.sfg.beer.order.service.web.mappers.BeerOrderMapper;
-import guru.sfg.beer.order.service.web.model.BeerOrderDto;
-import guru.sfg.beer.order.service.web.model.BeerOrderPagedList;
+import common.model.BeerOrderDto;
+import common.model.BeerOrderPagedList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -90,7 +90,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
 
       beerOrder.setCustomer(customerOptional.get());
 
-      beerOrder.setOrderStatus(OrderStatusEnum.NEW);
+      beerOrder.setOrderStatus(BeerOrderStatusEnum.NEW);
 
       // create a bidirectional relationship
       beerOrder.getBeerOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
@@ -116,7 +116,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
   @Override
   public void pickupOrder(UUID customerId, UUID orderId) {
     BeerOrder beerOrder = getOrder(customerId, orderId);
-    beerOrder.setOrderStatus(OrderStatusEnum.PICKED_UP);
+    beerOrder.setOrderStatus(BeerOrderStatusEnum.PICKED_UP);
 
     beerOrderRepository.save(beerOrder);
   }

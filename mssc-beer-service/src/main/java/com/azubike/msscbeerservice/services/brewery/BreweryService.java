@@ -2,10 +2,10 @@ package com.azubike.msscbeerservice.services.brewery;
 
 import com.azubike.msscbeerservice.config.JmsConfig;
 import com.azubike.msscbeerservice.domain.Beer;
-import common.events.BrewBeerEvent;
 import com.azubike.msscbeerservice.repositories.BeerRepository;
 import com.azubike.msscbeerservice.services.inventory.BeerInventoryService;
 import com.azubike.msscbeerservice.web.mappers.BeerMapper;
+import common.events.BrewBeerEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
