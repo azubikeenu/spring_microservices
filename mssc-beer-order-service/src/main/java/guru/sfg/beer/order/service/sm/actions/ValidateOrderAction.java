@@ -1,6 +1,6 @@
-package guru.sfg.beer.order.service.state_machine.actions;
+package guru.sfg.beer.order.service.sm.actions;
 
-import common.events.AllocateOrderRequest;
+import common.events.ValidateOrderRequest;
 import guru.sfg.beer.order.service.config.JmsConfig;
 import guru.sfg.beer.order.service.domain.BeerOrder;
 import guru.sfg.beer.order.service.domain.BeerOrderEvent;
@@ -15,25 +15,26 @@ import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
-public class AllocateOrderAction implements Action<BeerOrderStatusEnum , BeerOrderEvent> {
+@Service
+public class ValidateOrderAction implements Action<BeerOrderStatusEnum, BeerOrderEvent> {
     private final JmsTemplate jmsTemplate;
     private final BeerOrderRepository beerOrderRepository;
     private final BeerOrderMapper beerOrderMapper;
+
     @Override
     public void execute(final StateContext<BeerOrderStatusEnum, BeerOrderEvent> stateContext) {
-        log.debug("Firing allocate order action ");
-        var orderId =   String.valueOf(stateContext.getMessageHeader(BeerOrderManagerImpl.BEER_ORDER_ID));
-        final BeerOrder beerOrder = beerOrderRepository.findById(UUID.fromString(orderId))
-                .orElseThrow(() -> new RuntimeException("Beer with id " + orderId + " Not found"));
-
-        jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_QUEUE ,
-                AllocateOrderRequest.builder().beerOrderDto(beerOrderMapper.beerOrderToDto(beerOrder)));
-        log.debug("Sent allocate order request for order with id : {} " , orderId);
-
+        log.debug("Firing validate order action ");
+        var orderId = String.valueOf(stateContext.getMessageHeader(BeerOrderManagerImpl.BEER_ORDER_ID));
+        final Optional<BeerOrder> beerOrderOptional = beerOrderRepository.findById(UUID.fromString(orderId));
+        beerOrderOptional.ifPresentOrElse(beerOrder -> {
+            jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_QUEUE,
+                    ValidateOrderRequest.builder().beerOrderDto(beerOrderMapper.beerOrderToDto(beerOrder)).build());
+            log.debug("Sent validate order request for order with id : {} ", orderId);
+        }, () -> log.error("beerOrder with id {} not found", orderId));
     }
 }

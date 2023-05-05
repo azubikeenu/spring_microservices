@@ -20,7 +20,10 @@ public class ValidateRequestListener {
     public void listen(ValidateOrderRequest validateOrderRequest){
         final boolean isValid = validateRequest.performValidation(validateOrderRequest.getBeerOrderDto());
         log.debug("Sending a validation response for beerOrder with id {} " , validateOrderRequest.getBeerOrderDto().getId() );
+        final ValidateOrderResponse validateOrderResponse = ValidateOrderResponse.builder()
+                .isValid(isValid).beerId(validateOrderRequest.getBeerOrderDto().getId()).build();
+
         jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_RESPONSE ,
-                ValidateOrderResponse.builder().isValid(isValid).beerId(validateOrderRequest.getBeerOrderDto().getId()));
+                validateOrderResponse);
     }
 }

@@ -4,15 +4,16 @@ import com.azubike.msscbeerservice.services.BeerService;
 import common.model.BeerDto;
 import common.model.BeerPageList;
 import common.model.BeerStyle;
-import java.net.URI;
-import java.util.UUID;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,11 +52,14 @@ public class BeerServiceController {
     return ResponseEntity.ok(beerDto);
   }
 
+
   @GetMapping(value = "/{upc}/beerUpc", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<BeerDto> getBeerByUpc(@PathVariable("upc") String upc) {
     final BeerDto beerDto = beerService.findByUpc(upc);
     return ResponseEntity.ok(beerDto);
   }
+
+
 
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,

@@ -17,17 +17,16 @@
 
 package guru.sfg.beer.order.service.services;
 
+import common.model.BeerOrderDto;
+import common.model.BeerOrderPagedList;
 import guru.sfg.beer.order.service.domain.BeerOrder;
-import guru.sfg.beer.order.service.domain.Customer;
 import guru.sfg.beer.order.service.domain.BeerOrderStatusEnum;
+import guru.sfg.beer.order.service.domain.Customer;
 import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.repositories.CustomerRepository;
 import guru.sfg.beer.order.service.web.mappers.BeerOrderMapper;
-import common.model.BeerOrderDto;
-import common.model.BeerOrderPagedList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +47,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
   private final CustomerRepository customerRepository;
   private final BeerOrderMapper beerOrderMapper;
 
-  private final ApplicationEventPublisher publisher;
+  private final BeerOrderManager beerOrderManager;
 
   @Override
   // This lists all orders by a particular customer
@@ -91,16 +90,11 @@ public class BeerOrderServiceImpl implements BeerOrderService {
       beerOrder.setCustomer(customerOptional.get());
 
       beerOrder.setOrderStatus(BeerOrderStatusEnum.NEW);
-
       // create a bidirectional relationship
       beerOrder.getBeerOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
 
-      BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
-
-      log.debug("Saved Beer Order: " + beerOrder.getId());
-
-      // todo impl
-      //  publisher.publishEvent(new NewBeerOrderEvent(savedBeerOrder));
+      final BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
+      log.debug("Saved Beer Order: " + savedBeerOrder.getId());
 
       return beerOrderMapper.beerOrderToDto(savedBeerOrder);
     }
