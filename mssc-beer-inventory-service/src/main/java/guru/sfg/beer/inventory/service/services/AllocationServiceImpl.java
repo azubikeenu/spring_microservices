@@ -36,7 +36,7 @@ public class AllocationServiceImpl implements AllocationService {
         });
 
         log.debug("Total Ordered: " + totalOrdered.get() + " Total Allocated: " + totalAllocated.get());
-
+       // only return true when there is a full allocation ie quantity demanded === quantity recieved
         return totalOrdered.get() == totalAllocated.get();
 
     }
@@ -51,6 +51,7 @@ public class AllocationServiceImpl implements AllocationService {
             int orderQty = (beerOrderLine.getOrderQuantity() == null) ? 0 : beerOrderLine.getOrderQuantity();
             // the allocated quantity
             int allocatedQty = (beerOrderLine.getQuantityAllocated() == null) ? 0 : beerOrderLine.getQuantityAllocated();
+            // quantity demanded - quantity received
             int qtyToAllocate = orderQty - allocatedQty;
 
 
@@ -63,10 +64,11 @@ public class AllocationServiceImpl implements AllocationService {
                 beerInventory.setQuantityOnHand(inventory);
                 beerInventoryRepository.save(beerInventory);
             } else if (inventory > 0) { //partial allocation
+                // since the quantityToAllocate is greater than the quantity in stock , partial allocation
                 beerOrderLine.setQuantityAllocated(allocatedQty + inventory);
+                // set the quantity in stock to 0
                 beerInventory.setQuantityOnHand(0);
             }
-
 
             if (beerInventory.getQuantityOnHand() == 0) {
                 // remove the inventory record if its zero

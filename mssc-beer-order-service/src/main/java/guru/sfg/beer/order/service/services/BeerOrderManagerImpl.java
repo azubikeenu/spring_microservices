@@ -41,7 +41,6 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         beerOrder.setOrderStatus(BeerOrderStatusEnum.NEW);
         BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
         sendEvent(savedBeerOrder, BeerOrderEvent.VALIDATE_ORDER);
-        System.out.println("NEW BEER " + savedBeerOrder.getId());
         return savedBeerOrder;
     }
 
@@ -118,11 +117,13 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         AtomicInteger loopCount = new AtomicInteger(0);
 
         while (!found.get()) {
+            // this creates a base condition and exits the loop after 10 retries
             if (loopCount.incrementAndGet() > 10) {
                 found.set(true);
                 log.debug("Loop Retries exceeded");
             }
-
+            // since sendEvents are not in sync with the database call  we have to wait
+            // till the status is change to the intermediary state before proceeding to the final state
             Optional.of(beerOrderRepository.getReferenceById(beerOrderId)).ifPresentOrElse(beerOrder -> {
                 if (beerOrder.getOrderStatus().equals(statusEnum)) {
                     found.set(true);
@@ -146,6 +147,16 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     }
 
 
+    @Override
+    @Transactional
+    public void beerOrderPickedUp(UUID id) {
+        Optional<BeerOrder> beerOrderOptional = Optional.of(beerOrderRepository.getReferenceById(id));
+        beerOrderOptional.ifPresentOrElse(beerOrder -> {
+             // Handle process later
+            sendEvent(beerOrder, BeerOrderEvent.BEER_ORDER_PICKED_UP);
+        }, () -> log.error("Order Not Found. Id: " + id));
+    }
+
 
 
     private void sendEvent(BeerOrder beerOrder, BeerOrderEvent beerOrderEvent) {
@@ -159,8 +170,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
 
     private StateMachine<BeerOrderStatusEnum, BeerOrderEvent> build(BeerOrder beerOrder) {
         StateMachine<BeerOrderStatusEnum, BeerOrderEvent> sm = factory.getStateMachine(beerOrder.getId());
-        sm.stop();
-
+         sm.stop();
         sm.getStateMachineAccessor()
                 .doWithAllRegions(sma -> {
                     sma.addStateMachineInterceptor(beerStateChangedInterceptor);

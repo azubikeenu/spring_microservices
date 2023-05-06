@@ -18,7 +18,7 @@ public class ValidateOrderResponseListener {
     public void listen(ValidateOrderResponse validateOrderResponse) {
         var beerId = validateOrderResponse.getBeerId();
         log.debug("processing validation result for beerOrder with id : {} and isValid  {} " , beerId , validateOrderResponse.isValid());
-       beerOrderManager.processValidationResult(beerId,validateOrderResponse.isValid());
+        beerOrderManager.processValidationResult(beerId,validateOrderResponse.isValid());
     }
 
 }

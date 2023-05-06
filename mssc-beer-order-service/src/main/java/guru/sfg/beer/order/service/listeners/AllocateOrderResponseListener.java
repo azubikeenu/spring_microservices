@@ -14,14 +14,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AllocateOrderResponseListener {
     private final BeerOrderManager beerOrderManager;
-    @JmsListener(destination = JmsConfig.ALLOCATE_ORDER_QUEUE)
+    @JmsListener(destination = JmsConfig.ALLOCATE_ORDER_RESPONSE_QUEUE)
     public void listen(AllocateOrderResponse response){
         if(!response.getAllocationError() && !response.getPendingInventory()){
+            //allocated normally
             beerOrderManager.beerOrderAllocationPassed(response.getBeerOrderDto());
-        }else if(!response.getPendingInventory() && response.getAllocationError()){
-            beerOrderManager.beerOrderAllocationFailed(response.getBeerOrderDto());
-        }else if(response.getPendingInventory() && !response.getAllocationError()){
+        } else if(!response.getAllocationError() && response.getPendingInventory()) {
+            //pending inventory
             beerOrderManager.beerOrderAllocationPending(response.getBeerOrderDto());
+        } else if(response.getAllocationError()){
+            //allocation error
+            beerOrderManager.beerOrderAllocationFailed(response.getBeerOrderDto());
         }
     }
 }

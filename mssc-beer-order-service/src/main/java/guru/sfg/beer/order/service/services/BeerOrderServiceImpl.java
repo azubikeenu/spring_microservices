@@ -1,20 +1,3 @@
-/*
- *  Copyright 2019 the original author or authors.
- *
- * This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 package guru.sfg.beer.order.service.services;
 
 import common.model.BeerOrderDto;
@@ -86,18 +69,15 @@ public class BeerOrderServiceImpl implements BeerOrderService {
     if (customerOptional.isPresent()) {
       BeerOrder beerOrder = beerOrderMapper.dtoToBeerOrder(beerOrderDto);
       beerOrder.setId(null); // should not be set by outside client
-
       beerOrder.setCustomer(customerOptional.get());
-
       beerOrder.setOrderStatus(BeerOrderStatusEnum.NEW);
       // create a bidirectional relationship
       beerOrder.getBeerOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
-
       final BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
       log.debug("Saved Beer Order: " + savedBeerOrder.getId());
-
       return beerOrderMapper.beerOrderToDto(savedBeerOrder);
     }
+    System.out.println("############# I RAN");
     // todo add exception type
     throw new RuntimeException("Customer Not Found");
   }
@@ -109,10 +89,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
 
   @Override
   public void pickupOrder(UUID customerId, UUID orderId) {
-    BeerOrder beerOrder = getOrder(customerId, orderId);
-    beerOrder.setOrderStatus(BeerOrderStatusEnum.PICKED_UP);
-
-    beerOrderRepository.save(beerOrder);
+      beerOrderManager.beerOrderPickedUp(orderId);
   }
 
   private BeerOrder getOrder(UUID customerId, UUID orderId) {
