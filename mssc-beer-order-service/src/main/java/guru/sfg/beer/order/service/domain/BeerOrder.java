@@ -58,6 +58,7 @@ public class BeerOrder extends BaseEntity {
   @Fetch(FetchMode.JOIN)  // Same as setting the fetch = FetchType.EAGER ==> Data is loaded eagerly
   private Set<BeerOrderLine> beerOrderLines;
 
+    @Enumerated(EnumType.STRING)
     private BeerOrderStatusEnum orderStatus = BeerOrderStatusEnum.NEW;
     private String orderStatusCallbackUrl;
 }

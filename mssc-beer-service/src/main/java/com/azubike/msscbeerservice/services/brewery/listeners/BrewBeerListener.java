@@ -24,9 +24,11 @@ public class BrewBeerListener {
         var beer = beerRepository.findById(beerDto.getId()).orElseThrow(() ->
                 new RuntimeException(String.format("Beer with id %s not found", beerDto.getId().toString())));
 
+        // sets the quantity at hand to quantity to brew which is a property on the beer object
         beerDto.setQuantityOnHand(beer.getQuantityToBrew());
         log.debug("brewing beer :{} and updating quantityOnHand To {}" , beer.getId() , beer.getQuantityToBrew());
         NewInventoryEvent newInventoryEvent = new NewInventoryEvent(beerDto);
+        // this sends a request to the inventory service to update the inventory
         jmsTemplate.convertAndSend(JmsConfig.NEW_INVENTORY_QUEUE , newInventoryEvent);
     }
 }

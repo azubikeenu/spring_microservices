@@ -21,7 +21,6 @@ public class JmsConfig {
          converter.setTargetType(MessageType.TEXT);
          converter.setTypeIdPropertyName("_type");
          converter.setObjectMapper(objectMapper);
-        System.out.println("CONVERTER"+ converter + "objectMapper" + objectMapper);
         return converter;
     }
 }

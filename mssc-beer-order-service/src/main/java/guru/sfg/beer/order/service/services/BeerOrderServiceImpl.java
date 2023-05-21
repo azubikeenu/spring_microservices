@@ -77,7 +77,6 @@ public class BeerOrderServiceImpl implements BeerOrderService {
       log.debug("Saved Beer Order: " + savedBeerOrder.getId());
       return beerOrderMapper.beerOrderToDto(savedBeerOrder);
     }
-    System.out.println("############# I RAN");
     // todo add exception type
     throw new RuntimeException("Customer Not Found");
   }

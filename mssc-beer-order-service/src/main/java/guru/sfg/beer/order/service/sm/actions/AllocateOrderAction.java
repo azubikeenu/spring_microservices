@@ -35,8 +35,11 @@ public class AllocateOrderAction implements Action<BeerOrderStatusEnum , BeerOrd
         final BeerOrder beerOrder = beerOrderRepository.findById(UUID.fromString(Objects.requireNonNull(orderId)))
                 .orElseThrow(() -> new RuntimeException("Beer with id " + orderId + " Not found"));
 
+        final AllocateOrderRequest allocateOrderRequest = AllocateOrderRequest.builder()
+                .beerOrderDto(beerOrderMapper.beerOrderToDto(beerOrder)).build();
+
         jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_QUEUE ,
-                AllocateOrderRequest.builder().beerOrderDto(beerOrderMapper.beerOrderToDto(beerOrder)).build());
+                allocateOrderRequest);
         log.debug("Sent allocate order request for order with id : {} " , orderId);
 
     }
