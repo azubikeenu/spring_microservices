@@ -53,6 +53,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
                 sendEvent(beerOrder, BeerOrderEvent.VALIDATION_PASSED);
                 // wait for status to be validated
                 awaitForStatus(beerOrderId, BeerOrderStatusEnum.VALIDATED);
+                // get the validatedOrder with status VALIDATED
                 BeerOrder validatedOrder = beerOrderRepository.getReferenceById(beerOrderId);
                   sendEvent(validatedOrder , BeerOrderEvent.ALLOCATE_ORDER);
             } else {
@@ -121,6 +122,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
             if (loopCount.incrementAndGet() > 10) {
                 found.set(true);
                 log.debug("Loop Retries exceeded");
+                break;
             }
             // since sendEvents are not in sync with the database call  we have to wait
             // till the status is change to the intermediary state before proceeding to the final state
@@ -161,10 +163,11 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
 
     private void sendEvent(BeerOrder beerOrder, BeerOrderEvent beerOrderEvent) {
         final StateMachine<BeerOrderStatusEnum, BeerOrderEvent> sm = build(beerOrder);
+        // this augments the message send by the stateMachine with a header property that contains the beerId which is
+        // utilized by the BeerOrderStateChangeInterceptor
         final Message<BeerOrderEvent> message = MessageBuilder.withPayload(beerOrderEvent)
                 .setHeader(BEER_ORDER_ID, beerOrder.getId().toString()).build();
         final boolean accepted = sm.sendEvent(message);
-        System.out.println("EVENT ACTION " + beerOrderEvent + " is" + accepted);
         log.debug("Event {} sent accepted value is {}" , beerOrderEvent,accepted );
     }
 
@@ -174,6 +177,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         sm.getStateMachineAccessor()
                 .doWithAllRegions(sma -> {
                     sma.addStateMachineInterceptor(beerStateChangedInterceptor);
+                    //Rehydrate the status of the state machine with beerStatus from the database which is derived from the interceptor
                     sma.resetStateMachine(new
                             DefaultStateMachineContext<>(beerOrder.getOrderStatus(), null, null, null));
                 });

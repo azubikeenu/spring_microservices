@@ -2,7 +2,6 @@ package guru.sfg.beer.order.service.sm.actions;
 
 import common.events.AllocateOrderRequest;
 import guru.sfg.beer.order.service.config.JmsConfig;
-import guru.sfg.beer.order.service.domain.BeerOrder;
 import guru.sfg.beer.order.service.domain.BeerOrderEvent;
 import guru.sfg.beer.order.service.domain.BeerOrderStatusEnum;
 import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
@@ -32,15 +31,13 @@ public class AllocateOrderAction implements Action<BeerOrderStatusEnum , BeerOrd
     public void execute(final StateContext<BeerOrderStatusEnum, BeerOrderEvent> stateContext) {
         log.debug("Firing allocate order action ");
         String orderId =  (String) stateContext.getMessage().getHeaders().get(BeerOrderManagerImpl.BEER_ORDER_ID);
-        final BeerOrder beerOrder = beerOrderRepository.findById(UUID.fromString(Objects.requireNonNull(orderId)))
-                .orElseThrow(() -> new RuntimeException("Beer with id " + orderId + " Not found"));
-
-        final AllocateOrderRequest allocateOrderRequest = AllocateOrderRequest.builder()
-                .beerOrderDto(beerOrderMapper.beerOrderToDto(beerOrder)).build();
-
-        jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_QUEUE ,
-                allocateOrderRequest);
-        log.debug("Sent allocate order request for order with id : {} " , orderId);
+        beerOrderRepository.findById(UUID.fromString(Objects.requireNonNull(orderId))).ifPresentOrElse(beerOrder -> {
+            final AllocateOrderRequest allocateOrderRequest =AllocateOrderRequest.builder()
+                    .beerOrderDto(beerOrderMapper.beerOrderToDto(beerOrder)).build();
+            jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_QUEUE ,
+                    allocateOrderRequest);
+            log.debug("Sent allocate order request for beer order with id : {} " , orderId);
+        },() -> log.error("beerOrder  with id : {} not found" , orderId));
 
     }
 }

@@ -20,7 +20,6 @@ public class ValidateRequest {
     @Transactional
     public boolean performValidation(BeerOrderDto beerOrderDto){
         AtomicInteger beersNotFound = new AtomicInteger();
-
         beerOrderDto.getBeerOrderLines().forEach(orderLine -> {
             final Optional<Beer> byUpc = beerRepository.findByUpc(orderLine.getUpc());
              if(byUpc.isEmpty()){

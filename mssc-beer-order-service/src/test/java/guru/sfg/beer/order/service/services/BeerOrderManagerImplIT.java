@@ -13,6 +13,7 @@ import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.repositories.CustomerRepository;
 import guru.sfg.beer.order.service.services.beer.BeerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,11 @@ import org.springframework.web.util.UriTemplate;
 import java.net.URI;
 import java.util.*;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @ExtendWith(WireMockExtension.class)
@@ -39,7 +40,6 @@ public class BeerOrderManagerImplIT {
 
     @Autowired
     BeerOrderManager beerOrderManager;
-
 
     @Autowired
     ObjectMapper objectMapper;
@@ -59,12 +59,10 @@ public class BeerOrderManagerImplIT {
 
     private final UriTemplate beerByUpcUriTemplate =  new UriTemplate(BeerServiceImpl.BEER_UPC_PATH_V1);
     private final Map<String, String> uriVariables = new HashMap<>();
-    private URI beerUri;
 
     @TestConfiguration
     static class RestTemplateBuilderProvider {
         @Bean(destroyMethod = "stop")
-
         public WireMockServer wireMockServer(){
             WireMockServer wireMockServer = new WireMockServer(wireMockConfig().port(8083));
             wireMockServer.start();
@@ -81,10 +79,11 @@ public class BeerOrderManagerImplIT {
 
 
     @Test
+    @DisplayName("Should transition the BeerOrder Status from NEW to ALLOCATED ")
     void newToAllocated() throws JsonProcessingException {
         BeerDto beerDto = BeerDto.builder().id(beerId).upc("12345").build();
         uriVariables.put("upc" , "12345");
-        beerUri = beerByUpcUriTemplate.expand(uriVariables);
+        URI beerUri = beerByUpcUriTemplate.expand(uriVariables);
         var url = beerUri.toString();
         wireMockServer.stubFor(get(url)
                 .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
@@ -104,6 +103,64 @@ public class BeerOrderManagerImplIT {
                assertThat(beerOrderLine.getOrderQuantity()).isEqualTo(beerOrderLine.getQuantityAllocated());
            });
         });
+
+    }
+
+    @Test
+    @DisplayName("Should transition the BeerOrder Status from NEW to PICKED_UP ")
+    void testNewToPickedUp() throws JsonProcessingException {
+
+        BeerDto beerDto = BeerDto.builder().id(beerId).upc("12345").build();
+        uriVariables.put("upc" , "12345");
+        URI beerUri = beerByUpcUriTemplate.expand(uriVariables);
+        var url = beerUri.toString();
+        wireMockServer.stubFor(get(url)
+                .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
+
+        BeerOrder beerOrder = createBeerOrder();
+        BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
+
+        await().untilAsserted(() -> {
+            BeerOrder foundOrder = beerOrderRepository.findById(beerOrder.getId()).orElse(null);
+            assertThat(foundOrder).isNotNull();
+            assertEquals(BeerOrderStatusEnum.ALLOCATED, foundOrder.getOrderStatus());
+        });
+
+        beerOrderManager.beerOrderPickedUp(savedBeerOrder.getId());
+
+        await().untilAsserted(() -> {
+            BeerOrder foundOrder = beerOrderRepository.findById(beerOrder.getId()).orElse(null);
+            assertThat(foundOrder).isNotNull();
+            assertEquals(BeerOrderStatusEnum.PICKED_UP, foundOrder.getOrderStatus());
+        });
+
+        BeerOrder pickedUpOrder = beerOrderRepository.findById(savedBeerOrder.getId()).orElse(null);
+        assertThat(pickedUpOrder).isNotNull();
+
+        assertEquals(BeerOrderStatusEnum.PICKED_UP, pickedUpOrder.getOrderStatus());
+    }
+
+
+    @Test
+    @DisplayName("Should transition the BeerOrder Status from NEW to VALIDATION_EXCEPTION")
+    public void testFailedValidation() throws JsonProcessingException{
+
+        BeerDto beerDto = BeerDto.builder().id(beerId).upc("12345").build();
+        uriVariables.put("upc" , "12345");
+        URI beerUri = beerByUpcUriTemplate.expand(uriVariables);
+        var url = beerUri.toString();
+        wireMockServer.stubFor(get(url)
+                .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
+
+        BeerOrder beerOrder = createBeerOrder();
+        beerOrder.setCustomerRef("failed_validation");
+        beerOrderManager.newBeerOrder(beerOrder);
+
+        await().untilAsserted(() -> {
+            BeerOrder foundOrder = beerOrderRepository.findById(beerOrder.getId()).get();
+            assertEquals(BeerOrderStatusEnum.VALIDATION_EXCEPTION, foundOrder.getOrderStatus());
+        });
+
 
     }
 

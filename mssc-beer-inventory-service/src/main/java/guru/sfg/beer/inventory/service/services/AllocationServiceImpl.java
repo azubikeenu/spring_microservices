@@ -25,7 +25,7 @@ public class AllocationServiceImpl implements AllocationService {
         AtomicInteger totalAllocated = new AtomicInteger();
 
         beerOrderDto.getBeerOrderLines().forEach(beerOrderLine -> {
-            // only allocate beers whose order quantity is greater than the quantity allocated
+            // only allocate beers whose order quantity is greater than the quantity allocated ie quantity demanded > quantity received
             if ((((beerOrderLine.getOrderQuantity() != null ? beerOrderLine.getOrderQuantity() : 0)
                     - (beerOrderLine.getQuantityAllocated() != null ? beerOrderLine.getQuantityAllocated() : 0)) > 0)) {
                 allocateBeerOrderLine(beerOrderLine);
@@ -64,7 +64,7 @@ public class AllocationServiceImpl implements AllocationService {
                 beerInventory.setQuantityOnHand(inventory);
                 beerInventoryRepository.save(beerInventory);
             } else if (inventory > 0) { //partial allocation
-                // since the quantityToAllocate is greater than the quantity in stock , partial allocation
+                // since the quantity demanded  is greater than the quantity in stock , partial allocation
                 beerOrderLine.setQuantityAllocated(allocatedQty + inventory);
                 // set the quantity in stock to 0
                 beerInventory.setQuantityOnHand(0);
