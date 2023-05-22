@@ -70,6 +70,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     @Override
     public void beerOrderAllocationPassed(BeerOrderDto beerOrderDto) {
         beerOrderRepository.findById(beerOrderDto.getId()).ifPresentOrElse(beerOrder -> {
+            awaitForStatus(beerOrder.getId() ,BeerOrderStatusEnum.ALLOCATED);
             updateAllocatedQty(beerOrderDto);
             sendEvent(beerOrder, BeerOrderEvent.ALLOCATION_SUCCESS);
         }, () -> log.info("Order with id {} not found", beerOrderDto.getId()));
@@ -119,6 +120,12 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     }
 
 
+    /**
+     * This is a utility method that helps handle the async state of event messaging
+     * it is best used when we are transitioning from one state to another within a single method
+     * @param beerOrderId
+     * @param statusEnum
+     */
 
     private void awaitForStatus(UUID beerOrderId, BeerOrderStatusEnum statusEnum) {
 
@@ -128,7 +135,6 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         while (!found.get()) {
             // this creates a base condition and exits the loop after 10 retries
             if (loopCount.incrementAndGet() > 10) {
-                found.set(true);
                 log.debug("Loop Retries exceeded");
                 break;
             }

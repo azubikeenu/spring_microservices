@@ -106,6 +106,8 @@ public class BeerOrderManagerImplIT {
 
     }
 
+
+
     @Test
     @DisplayName("Should transition the BeerOrder Status from ALLOCATION_PENDING to CANCELLED")
     void allocationPendingToCancelled() throws JsonProcessingException{
@@ -126,9 +128,6 @@ public class BeerOrderManagerImplIT {
             assertThat(foundOrder).isNotNull();
             assertThat(foundOrder.getOrderStatus()).isEqualTo(BeerOrderStatusEnum.CANCELLED);
         });
-
-
-
 
     }
 

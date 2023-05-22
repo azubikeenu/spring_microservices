@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class AllocationServiceImpl implements AllocationService {
     private final BeerInventoryRepository beerInventoryRepository;
+
     @Override
     public Boolean allocateOrder(final BeerOrderDto beerOrderDto) {
         log.debug("Allocating OrderId: " + beerOrderDto.getId());
@@ -36,8 +37,21 @@ public class AllocationServiceImpl implements AllocationService {
         });
 
         log.debug("Total Ordered: " + totalOrdered.get() + " Total Allocated: " + totalAllocated.get());
-       // only return true when there is a full allocation ie quantity demanded === quantity recieved
+        // only return true when there is a full allocation ie quantity demanded === quantity received
         return totalOrdered.get() == totalAllocated.get();
+
+    }
+
+    @Override
+    public void deallocateOrder(final BeerOrderDto beerOrderDto) {
+        beerOrderDto.getBeerOrderLines().forEach(orderLineDto -> {
+            final BeerInventory beerInventory = BeerInventory.builder().beerId(orderLineDto.getId())
+                    .upc(orderLineDto.getUpc())
+                    .quantityOnHand(orderLineDto.getQuantityAllocated())
+                    .build();
+            beerInventoryRepository.save(beerInventory);
+            log.debug("Saving updating inventory for beer with id {} and inventory id {} ",beerInventory.getBeerId() , beerInventory.getId());
+        });
 
     }
 

@@ -13,6 +13,17 @@
     <name>mssc-beer-service</name>
     <description>artifact for beer microservice</description>
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-artemis</artifactId>
+        </dependency>
+
         <!-- To externalize properties-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
