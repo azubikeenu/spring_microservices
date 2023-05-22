@@ -14,6 +14,8 @@ public class JmsConfig {
     public static  final String VALIDATE_ORDER_RESPONSE = "validate-order-response";
 
     public static final String ALLOCATE_ORDER_RESPONSE_QUEUE  = "allocate-order-response";
+    public static final String DEALLOCATE_ORDER_QUEUE = "deallocate-order";
+
     @Bean
     public MappingJackson2MessageConverter  messageConverter(ObjectMapper objectMapper){
         // this creates a bidirectional mapping between our POJO objects to JSON
