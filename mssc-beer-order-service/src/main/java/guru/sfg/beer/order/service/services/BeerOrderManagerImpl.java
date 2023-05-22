@@ -44,6 +44,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         return savedBeerOrder;
     }
 
+
     @Override
     @Transactional
     public void processValidationResult(UUID beerOrderId, Boolean isValid) {
@@ -92,7 +93,14 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         }, () -> log.info("Order with id {} not found", beerOrderDto.getId()));
     }
 
+    @Override
+    @Transactional
+    public void cancelOrder(final UUID id) {
+      beerOrderRepository.findById(id).ifPresentOrElse((beerOrder -> {
+          sendEvent(beerOrder , BeerOrderEvent.CANCEL_ORDER);
+      }) , ()-> log.info("Order with id {} not found" ,id));
 
+    }
 
     private void updateAllocatedQty (BeerOrderDto beerOrderDto) {
         Optional<BeerOrder> allocatedOrderOptional = Optional.of(beerOrderRepository.getReferenceById(beerOrderDto.getId()));

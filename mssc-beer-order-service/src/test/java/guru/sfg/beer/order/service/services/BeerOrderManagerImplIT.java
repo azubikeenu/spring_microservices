@@ -107,6 +107,32 @@ public class BeerOrderManagerImplIT {
     }
 
     @Test
+    @DisplayName("Should transition the BeerOrder Status from ALLOCATION_PENDING to CANCELLED")
+    void allocationPendingToCancelled() throws JsonProcessingException{
+        BeerDto beerDto = BeerDto.builder().id(beerId).upc("12345").build();
+        uriVariables.put("upc" , "12345");
+        URI beerUri = beerByUpcUriTemplate.expand(uriVariables);
+        var url = beerUri.toString();
+        wireMockServer.stubFor(get(url)
+                .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
+
+        final BeerOrder beerOrder = createBeerOrder();
+        beerOrder.setCustomerRef("dont_allocate");
+        BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
+        beerOrderManager.cancelOrder(savedBeerOrder.getId());
+
+        await().untilAsserted(() -> {
+            BeerOrder foundOrder = beerOrderRepository.findById(savedBeerOrder.getId()).orElse(null);
+            assertThat(foundOrder).isNotNull();
+            assertThat(foundOrder.getOrderStatus()).isEqualTo(BeerOrderStatusEnum.CANCELLED);
+        });
+
+
+
+
+    }
+
+    @Test
     @DisplayName("Should transition the BeerOrder Status from NEW to ALLOCATION_ERROR ")
     public void failedAllocation() throws JsonProcessingException{
         BeerDto beerDto = BeerDto.builder().id(beerId).upc("12345").build();
@@ -212,9 +238,33 @@ public class BeerOrderManagerImplIT {
             assertEquals(BeerOrderStatusEnum.VALIDATION_EXCEPTION, foundOrder.getOrderStatus());
         });
 
-
     }
 
+
+
+    @Test
+    @DisplayName("Should transition the BeerOrder Status from VALIDATION_PENDING to CANCELLED")
+    public void validationPendingToCancelled() throws JsonProcessingException{
+        BeerDto beerDto = BeerDto.builder().id(beerId).upc("12345").build();
+        uriVariables.put("upc" , "12345");
+        URI beerUri = beerByUpcUriTemplate.expand(uriVariables);
+        var url = beerUri.toString();
+        wireMockServer.stubFor(get(url)
+                .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
+
+
+        BeerOrder beerOrder = createBeerOrder();
+        beerOrder.setCustomerRef("cancel_validation");
+        final BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
+        beerOrderManager.cancelOrder(savedBeerOrder.getId());
+        await().untilAsserted(() -> {
+            BeerOrder foundOrder = beerOrderRepository.findById(beerOrder.getId()).orElse(null);
+            assertThat(foundOrder).isNotNull();
+            assertEquals(BeerOrderStatusEnum.CANCELLED, foundOrder.getOrderStatus());
+        });
+
+
+    }
 
 
     public BeerOrder createBeerOrder(){
