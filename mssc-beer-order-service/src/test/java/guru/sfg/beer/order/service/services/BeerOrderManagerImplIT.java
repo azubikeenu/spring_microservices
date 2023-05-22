@@ -107,6 +107,60 @@ public class BeerOrderManagerImplIT {
     }
 
     @Test
+    @DisplayName("Should transition the BeerOrder Status from NEW to ALLOCATION_ERROR ")
+    public void failedAllocation() throws JsonProcessingException{
+        BeerDto beerDto = BeerDto.builder().id(beerId).upc("12345").build();
+        uriVariables.put("upc" , "12345");
+        URI beerUri = beerByUpcUriTemplate.expand(uriVariables);
+        var url = beerUri.toString();
+        wireMockServer.stubFor(get(url)
+                .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
+
+        final BeerOrder beerOrder = createBeerOrder();
+        beerOrder.setCustomerRef("allocation_error");
+        BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
+
+
+        await().untilAsserted(() -> {
+            BeerOrder foundOrder = beerOrderRepository.findById(savedBeerOrder.getId()).orElse(null);
+            assertThat(foundOrder).isNotNull();
+            assertThat(foundOrder.getOrderStatus()).isEqualTo(BeerOrderStatusEnum.ALLOCATION_EXCEPTION);
+        });
+
+    }
+
+    @Test
+    @DisplayName("Should transition the BeerOrder Status from NEW to PENDING_INVENTORY")
+    public void partialAllocation() throws JsonProcessingException{
+        BeerDto beerDto = BeerDto.builder().id(beerId).upc("12345").build();
+        uriVariables.put("upc" , "12345");
+        URI beerUri = beerByUpcUriTemplate.expand(uriVariables);
+        var url = beerUri.toString();
+        wireMockServer.stubFor(get(url)
+                .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
+
+        final BeerOrder beerOrder = createBeerOrder();
+        beerOrder.setCustomerRef("allocation_pending");
+        BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
+
+
+        await().untilAsserted(() -> {
+            BeerOrder foundOrder = beerOrderRepository.findById(savedBeerOrder.getId()).orElse(null);
+            assertThat(foundOrder).isNotNull();
+            assertThat(foundOrder.getOrderStatus()).isEqualTo(BeerOrderStatusEnum.PENDING_INVENTORY);
+        });
+
+        await().untilAsserted(()-> {
+            BeerOrder foundOrder = beerOrderRepository.findById(savedBeerOrder.getId()).orElse(null);
+            Objects.requireNonNull(foundOrder).getBeerOrderLines().forEach(beerOrderLine -> {
+                assertThat(beerOrderLine.getOrderQuantity()).isNotEqualTo(beerOrderLine.getQuantityAllocated());
+            });
+        });
+    }
+
+
+
+    @Test
     @DisplayName("Should transition the BeerOrder Status from NEW to PICKED_UP ")
     void testNewToPickedUp() throws JsonProcessingException {
 
@@ -134,10 +188,6 @@ public class BeerOrderManagerImplIT {
             assertEquals(BeerOrderStatusEnum.PICKED_UP, foundOrder.getOrderStatus());
         });
 
-        BeerOrder pickedUpOrder = beerOrderRepository.findById(savedBeerOrder.getId()).orElse(null);
-        assertThat(pickedUpOrder).isNotNull();
-
-        assertEquals(BeerOrderStatusEnum.PICKED_UP, pickedUpOrder.getOrderStatus());
     }
 
 
@@ -157,7 +207,8 @@ public class BeerOrderManagerImplIT {
         beerOrderManager.newBeerOrder(beerOrder);
 
         await().untilAsserted(() -> {
-            BeerOrder foundOrder = beerOrderRepository.findById(beerOrder.getId()).get();
+            BeerOrder foundOrder = beerOrderRepository.findById(beerOrder.getId()).orElse(null);
+            assertThat(foundOrder).isNotNull();
             assertEquals(BeerOrderStatusEnum.VALIDATION_EXCEPTION, foundOrder.getOrderStatus());
         });
 
