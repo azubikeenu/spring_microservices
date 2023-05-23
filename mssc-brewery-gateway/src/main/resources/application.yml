@@ -4,3 +4,27 @@ server:
 spring:
   application:
     name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id : BEER-INVENTORY-SERVICE
+          uri: lb://BEER-INVENTORY-SERVICE
+          predicates:
+            - Path=/api/v1/inventory/**
+
+        - id : BEER-ORDER-SERVICE
+          uri: lb://BEER-ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/customers/**
+
+        - id : BEER-SERVICE
+          uri: lb://BEER-SERVICE
+          predicates:
+            - Path=/api/v1/beer/**
+eureka:
+  client:
+    register-with-eureka: false
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
