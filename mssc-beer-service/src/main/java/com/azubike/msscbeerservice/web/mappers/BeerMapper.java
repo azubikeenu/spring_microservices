@@ -6,14 +6,14 @@ import common.model.BeerDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 
 @Mapper(
     uses = {DateMapper.class},
     componentModel = "spring")
+@Profile("local_discovery")
 public abstract class BeerMapper {
   @Autowired protected BeerInventoryService beerInventoryService;
-
-
   @Mapping(target = "quantityOnHand" ,ignore = true)
   public abstract BeerDto beerToDto(Beer beer);
 

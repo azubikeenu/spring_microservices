@@ -14,7 +14,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class RouterConfig {
     @Bean
     public RouterFunction<ServerResponse> inventoryRoute(InventoryHandler inventoryHandler) {
-        return route(GET("/api/v1/inventory/{beerId}/beer")
+        return route(GET("/api/v1/beer/{beerId}/inventory")
                         .and(accept(MediaType.APPLICATION_JSON)),
                 inventoryHandler::listInventory);
     }

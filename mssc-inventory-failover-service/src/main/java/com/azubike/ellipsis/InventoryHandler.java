@@ -18,12 +18,13 @@ import java.util.UUID;
 public class InventoryHandler {
     public Mono<ServerResponse> listInventory(ServerRequest request){
         log.debug("Calling failover service");
+        final UUID id =UUID.fromString(request.pathVariable("beerId"));
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_NDJSON)
                 .body(Mono.just(Collections.singletonList(
                         BeerInventoryDto.builder()
                                 .id(UUID.randomUUID())
-                                .beerId(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+                                .beerId(id)
                                 .quantityOnHand(999)
                                 .createdDate(OffsetDateTime.now())
                                 .lastModifiedDate(OffsetDateTime.now())

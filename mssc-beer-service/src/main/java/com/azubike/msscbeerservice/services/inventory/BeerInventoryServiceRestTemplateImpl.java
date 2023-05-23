@@ -19,7 +19,7 @@ import java.util.UUID;
 @ConfigurationProperties(prefix = "sfg.brewery", ignoreInvalidFields = true)
 @Profile("!local_discovery")
 public class BeerInventoryServiceRestTemplateImpl implements BeerInventoryService {
-  public final static String INVENTORY_PATH = "/api/v1/inventory/{beerId}/beer";
+  public final static String INVENTORY_PATH = "/api/v1/beer/{beerId}/inventory";
   private  String beerInventoryServiceHost;
 
   private final RestTemplate restTemplate;
